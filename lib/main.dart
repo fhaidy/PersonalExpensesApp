@@ -50,6 +50,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final globalKey = GlobalKey<ScaffoldState>();
   final List<Transaction> _transactions = [
     //   Transaction(
     //     id: 't0',
@@ -89,6 +90,21 @@ class _MyHomePageState extends State<MyHomePage> {
       _transactions.add(transaction);
     });
     Navigator.of(context).pop();
+
+    globalKey.currentState.showSnackBar(SnackBar(
+      content: Text('Despesa cadastrada'),
+      duration: Duration(seconds: 2),
+    ));
+  }
+
+  _removeTransaction(String id) {
+    setState(() {
+      _transactions.removeWhere((element) => element.id == id);
+    });
+    globalKey.currentState.showSnackBar(SnackBar(
+      content: Text('Despesa removida'),
+      duration: Duration(seconds: 2),
+    ));
   }
 
   _openTransactionFormModal(BuildContext context) {
@@ -101,7 +117,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    _transactions.sort((a, b) => a.date.compareTo(b.date));
     return Scaffold(
+      key: globalKey,
       appBar: AppBar(
         title: Text('Despesas Pessoais'),
         actions: [
@@ -116,7 +134,8 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Chart(_recentTransactions),
-            TransactionList(_transactions),
+            TransactionList(
+                _transactions.reversed.toList(), _removeTransaction),
           ],
         ),
       ),
