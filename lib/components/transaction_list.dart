@@ -27,38 +27,34 @@ class TransactionList extends StatelessWidget {
           : ListView.builder(
               itemCount: transactions.length,
               itemBuilder: (ctx, index) => Card(
-                  child: Row(
-                children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(
-                      horizontal: 15,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Theme.of(context).primaryColor,
-                        width: 2,
+                elevation: 4,
+                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Theme.of(context).primaryColor,
+                    child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: FittedBox(
+                        child: Text(
+                          'R\$${transactions[index].value.toStringAsFixed(2)}',
+                          style: Theme.of(context).primaryTextTheme.headline6,
+                        ),
                       ),
                     ),
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      'R\$ ${transactions[index].value.toStringAsFixed(2)}',
-                      style: Theme.of(context).primaryTextTheme.headline6,
-                    ),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(transactions[index].title,
-                          style: Theme.of(context).primaryTextTheme.bodyText1),
-                      Text(
-                        DateFormat('d MMMM y').format(transactions[index].date),
-                        style: Theme.of(context).primaryTextTheme.subtitle1,
-                      )
-                    ],
+                  title: Text(
+                    transactions[index].title,
+                    style: Theme.of(context).primaryTextTheme.headline5,
                   ),
-                ],
-              )),
+                  subtitle: Text(
+                    DateFormat('dd MMMM').format(transactions[index].date),
+                  ),
+                  trailing: IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red[300]),
+                      onPressed: null),
+                ),
+              ),
             ),
     );
   }

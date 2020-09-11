@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:expenses/components/chart.dart';
 import 'package:expenses/components/transaction_form.dart';
 import 'package:flutter/material.dart';
 import 'components/transaction_list.dart';
@@ -15,16 +16,19 @@ class ExpensesApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'QuickSand',
         primarySwatch: Colors.green,
-        accentColor: Colors.amber,
+        accentColor: Colors.greenAccent,
         primaryTextTheme: TextTheme(
           bodyText1: TextStyle(
               fontSize: 20.0, fontFamily: 'QuickSand', color: Colors.black),
+          bodyText2: TextStyle(
+              fontSize: 12.0, fontFamily: 'QuickSand', color: Colors.black),
           headline5: TextStyle(
               fontSize: 20.0, color: Colors.black, fontFamily: 'QuickSand'),
           headline6: TextStyle(
-              fontSize: 20.0, color: Colors.green, fontFamily: 'QuickSand'),
+              fontSize: 20.0, color: Colors.white, fontFamily: 'QuickSand'),
           subtitle1: TextStyle(
               fontSize: 16.0, color: Colors.grey, fontFamily: 'QuickSand'),
+          button: TextStyle(color: Colors.white),
         ),
         appBarTheme: AppBarTheme(
           textTheme: ThemeData.light().textTheme.copyWith(
@@ -47,26 +51,39 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _transactions = [
-    Transaction(
-      id: 't1',
-      title: 'New Shoes',
-      value: 310.76,
-      date: DateTime.now(),
-    ),
-    Transaction(
-      id: 't2',
-      title: 'Energy Bill',
-      value: 211.3,
-      date: DateTime.now(),
-    ),
+    //   Transaction(
+    //     id: 't0',
+    //     title: 'Old Bill',
+    //     value: 310.76,
+    //     date: DateTime.now().subtract(Duration(days: 33)),
+    //   ),
+    //   Transaction(
+    //     id: 't1',
+    //     title: 'New Shoes',
+    //     value: 310.76,
+    //     date: DateTime.now().subtract(Duration(days: 4)),
+    //   ),
+    //   Transaction(
+    //     id: 't2',
+    //     title: 'Energy Bill',
+    //     value: 211.3,
+    //     date: DateTime.now().subtract(Duration(days: 3)),
+    //   ),
   ];
 
-  _addTransaction(String title, double value) {
+  List<Transaction> get _recentTransactions {
+    return _transactions
+        .where((transaction) => transaction.date
+            .isAfter(DateTime.now().subtract(Duration(days: 7))))
+        .toList();
+  }
+
+  _addTransaction(String title, double value, DateTime date) {
     final transaction = Transaction(
       id: Random().nextDouble().toString(),
       title: title,
       value: value,
-      date: DateTime.now(),
+      date: date,
     );
     setState(() {
       _transactions.add(transaction);
@@ -98,14 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              width: double.infinity,
-              child: Card(
-                color: Theme.of(context).primaryColor,
-                child: Text('Chart'),
-                elevation: 5,
-              ),
-            ),
+            Chart(_recentTransactions),
             TransactionList(_transactions),
           ],
         ),
